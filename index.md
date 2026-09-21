@@ -2,6 +2,6 @@
 
 ## Demos
 - [Chessboard Demo](chessboard)
-
+- [Random Circles](circles)
 ## Projects
 - First assignment will go here
