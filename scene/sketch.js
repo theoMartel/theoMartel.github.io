@@ -5,53 +5,87 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let diameter = 10;
+let thickness = 10;
 let canvas;
 let lastCircleX = 0;
 let lastCircleY = 0;
-let circleX;
-let circleY;
+let diameter = 30;
 
 async function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   textSize(30);
+  strokeWeight(thickness);
 }
 
 function draw() {
   drawLines();
   canvas.mouseWheel(cursorSize);
-  writeVariables();
+  drawThings();
 }
 
 function drawLines() {
-  if (mouseIsPressed) {
+  strokeWeight(thickness);
+  if (mouseIsPressed && ( mouseX >= width/8 && mouseY >= height/8)) {
     fill("white");
-    circle(mouseX,mouseY,diameter);
-    circleX = mouseX;
-    circleY = mouseY - diameter/2;
-    rect(circleX,circleY,diameter,diameter);
+    line(mouseX,mouseY,lastCircleX,lastCircleY);
 
-    lastCircleX = circleX;
-    lastCircleY = circleY;
+    lastCircleX = mouseX;
+    lastCircleY = mouseY;
+  }
+  if (!mouseIsPressed) {
+    lastCircleX = mouseX;
+    lastCircleY = mouseY;
   }
 }
 
 function cursorSize(event) {
   if (event.deltaY < 0) {
-    diameter += 5;
+    thickness += 5;
   }
   else if (event.deltaY > 0) {
 
-    if (diameter > 5) {
-      diameter -= 5;
+    if (thickness > 5) {
+      thickness -= 5;
 
     }
   }
 }
 
-function writeVariables() {
+function keyPressed() {
+  if (key === "c") {
+    background("white");
+  }
+}
+
+function drawThings() {
+
+  strokeWeight(2);
+
+  // colour choosers
+  fill("red");
+  circle(width/10,height/8, diameter);
+  fill("orange");
+  circle(width/10,height/8 + 40, diameter);
+  fill("yellow");
+  circle(width/10,height/8 + 80, diameter);
+  fill("green");
+  circle(width/10,height/8 + 120, diameter);
+  fill("blue");
+  circle(width/10,height/8 + 160, diameter);
+  fill("purple");
+  circle(width/10,height/8 + 200, diameter);
+  fill("black");
+  circle(width/10,height/8 + 240, diameter);
+  fill("white");
+  circle(width/10,height/8 + 280, diameter);
+
+  // size display
   fill("gray");
   rect(30,10,150,50);
   fill("black");
-  text("size: " + diameter, 40,40);
+  text("size: " + thickness, 40,40);
+
+  // drawing area
+  fill("white");
+  rect(width/8,height/8,width/8*6, height/8*6,10,10,10,10);
 }
