@@ -9,6 +9,7 @@
 - [Bouncing Circles](bouncing-circles)
 - [Perlin noise](noise)
 - [Terrain Generation](terrain)
+- [Collision Library Demo](collision)
 
 ## Projects
 - [Interactive Scene](scene)
