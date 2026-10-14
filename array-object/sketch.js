@@ -20,6 +20,8 @@ let angle = 0;
 let endX;
 let endY;
 let cannonLength = 50;
+const GRAVITY = 0.2;
+
 
 async function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -42,9 +44,7 @@ function draw() {
   drawEnemies();
   drawPlayer();
   movePlayer();
-  for (let bullet of bullets) {
-    circle(bullet.x,bullet.y,bullet.diameter);
-  }
+  drawBullets();
 }
 
 function mouseWheel(event) {
@@ -52,7 +52,7 @@ function mouseWheel(event) {
     let enemy = {
       x: noise(time),
       y: noise(time + 1000),
-      size: 100,
+      diameter: 100,
       offset: random(10000),
       
     };
@@ -65,7 +65,7 @@ function mouseWheel(event) {
 
 function drawEnemies() {
   for (let enemy of enemys) {
-    circle(enemy.x,enemy.y,enemy.size);
+    circle(enemy.x,enemy.y,enemy.diameter);
     enemy.x = noise(time + enemy.offset) * width;
     enemy.y = noise(time + enemy.offset + 1000) * height;
   
@@ -80,7 +80,7 @@ function drawPlayer() {
   circle(playerCannon.x,playerCannon.y,playerCannon.diameter);
   strokeWeight(20);
 
-  angle = atan2(mouseY - playerCannon.y,mouseX - playerCannon.x)
+  angle = atan2(mouseY - playerCannon.y,mouseX - playerCannon.x);
   endX = playerCannon.x + cos(angle) * cannonLength;
   endY = playerCannon.y + sin(angle) * cannonLength;
 
@@ -105,8 +105,34 @@ function mousePressed() {
   let bullet = {
     x: endX,
     y: endY,
+    velocity: 15,
     diameter: 20,
-
-  }
+    shotAngle: angle,
+  };
   bullets.push(bullet);
+}
+
+function drawBullets() {
+  for (let bullet of bullets) {
+    if (bullet.y < height) {
+      bullet.y -= bullet.velocity;
+      bullet.x += cos(bullet.shotAngle) * 10;
+      circle(bullet.x,bullet.y,bullet.diameter);
+
+      bullet.velocity -= GRAVITY;
+    }
+    else {
+      bullets.splice(0,1);
+    }
+    for (let enemy of enemys ) {
+      hit = collideCircleCircle(bullet.x,bullet.y,bullet.diameter,enemy.x,enemy.y,enemy.diameter);
+      if (hit) {
+        fill('red');
+        circle(100,100,100);
+      }
+    }
+
+
+  };
+
 }
