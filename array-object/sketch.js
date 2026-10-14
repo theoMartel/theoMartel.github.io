@@ -5,73 +5,108 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let birds = [];
 
-let playerBird = {
-  size: 50,
-  x: 100,
-  y: 100,
+let hit = false;
 
-};
+let enemys = [];
+let bullets = [];
 
-let backgroundColour = "#ADD8E6"
-let time = 0;
+let time = 10;
 let deltaTime = 0.01;
-let canvas;
+let speed = 10;
+let player = {};
+let playerCannon = {};
+let angle = 0;
+let endX;
+let endY;
+let cannonLength = 50;
 
 async function setup() {
-  canvas = createCanvas(windowWidth, windowHeight);
-  noStroke();
+  createCanvas(windowWidth, windowHeight);
+  player = {
+    width: 100,
+    height: 30,
+    x: 0,
+    y: height - 50,
+  };
 
+  playerCannon = {
+    diameter: 40,
+    x: player.x + player.width/2,
+    y: player.y,
+  };
 }
 
 function draw() {
-  background(backgroundColour);
-  drawPlayerBird();
-  moveBirds();
-  drawBirds();
-  
-}
-
-
-function drawPlayerBird() {
-  fill("black");
-  rect(playerBird.x,playerBird.y,playerBird.size,playerBird.size);
-
-  fill(backgroundColour);
-  rect(playerBird.subtractX, playerBird.subtractY, playerBird.subtractSize, playerBird.subtractSize);
-}
-
-function moveBirds() {
-  for (let bird of birds) {
-    bird.x = noise(time + bird.timeOffset) * width;
-    bird.y = noise(time + bird.timeOffset + 1000) * height;
+  background(220);
+  drawEnemies();
+  drawPlayer();
+  movePlayer();
+  for (let bullet of bullets) {
+    circle(bullet.x,bullet.y,bullet.diameter);
   }
-  playerBird.x = noise(time) * width;
-  playerBird.y = noise(time + 10000) * height;
-
-  time += deltaTime;
 }
 
 function mouseWheel(event) {
-   if (event.deltaY < 0) {
-    let newBird = {  
-      size: 50,
-      x: random(50,100),
-      y: random(50,100),
-      timeOffset: random(10000),
+  if (event.delta < 0) {
+    let enemy = {
+      x: noise(time),
+      y: noise(time + 1000),
+      size: 100,
+      offset: random(10000),
+      
     };
-    birds.push(newBird);
+    enemys.push(enemy);
   }
-  else if (event.deltaY > 0) {
-    birds.pop();
+  else{
+    enemys.pop();
   }
 }
 
-function drawBirds() {
-  for (let bird of birds) {
-    fill("black");
-    rect(bird.x,bird.y,bird.size,bird.size)
+function drawEnemies() {
+  for (let enemy of enemys) {
+    circle(enemy.x,enemy.y,enemy.size);
+    enemy.x = noise(time + enemy.offset) * width;
+    enemy.y = noise(time + enemy.offset + 1000) * height;
+  
+  };
+  time += deltaTime;
+  
+}
+
+function drawPlayer() {
+  strokeWeight(2);
+  rect(player.x,player.y,player.width,player.height);
+  circle(playerCannon.x,playerCannon.y,playerCannon.diameter);
+  strokeWeight(20);
+
+  angle = atan2(mouseY - playerCannon.y,mouseX - playerCannon.x)
+  endX = playerCannon.x + cos(angle) * cannonLength;
+  endY = playerCannon.y + sin(angle) * cannonLength;
+
+  line(playerCannon.x,playerCannon.y,endX,endY);
+}
+
+function movePlayer() {
+  if (keyIsDown("a") || keyIsDown(LEFT_ARROW)) {
+    if (player.x > 0) {
+      player.x -= speed;
+    }
+  }
+  else if (keyIsDown("d") || keyIsDown(RIGHT_ARROW)) {
+    if (player.x < width-player.width ) {
+      player.x += speed;
+    }
+  }
+  playerCannon.x = player.x + player.width/2;
+}
+
+function mousePressed() {
+  let bullet = {
+    x: endX,
+    y: endY,
+    diameter: 20,
 
   }
+  bullets.push(bullet);
 }
