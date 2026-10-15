@@ -20,7 +20,7 @@ let angle = 0;
 let endX;
 let endY;
 let cannonLength = 50;
-const GRAVITY = 0.2;
+const GRAVITY = 1;
 
 
 async function setup() {
@@ -105,7 +105,6 @@ function mousePressed() {
   let bullet = {
     x: endX,
     y: endY,
-    velocity: 15,
     diameter: 20,
     shotAngle: angle,
   };
@@ -114,21 +113,26 @@ function mousePressed() {
 
 function drawBullets() {
   for (let bullet of bullets) {
-    if (bullet.y < height) {
-      bullet.y -= bullet.velocity;
-      bullet.x += cos(bullet.shotAngle) * 10;
+
+    if (bullet.y > 0) {
+      bullet.y += sin(bullet.shotAngle) * 10;
+
+      bullet.x += cos(bullet.shotAngle) *10;
+
+
       circle(bullet.x,bullet.y,bullet.diameter);
 
-      bullet.velocity -= GRAVITY;
+
     }
     else {
       bullets.splice(0,1);
     }
+
     for (let enemy of enemys ) {
       hit = collideCircleCircle(bullet.x,bullet.y,bullet.diameter,enemy.x,enemy.y,enemy.diameter);
       if (hit) {
-        fill('red');
-        circle(100,100,100);
+        enemys.pop();
+        bullets.splice(0,1);
       }
     }
 
