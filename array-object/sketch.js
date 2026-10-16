@@ -112,27 +112,27 @@ function mousePressed() {
 }
 
 function drawBullets() {
-  for (let bullet of bullets) {
+  for (let number = 0; number < bullets.length; number++) {
+    let bullet = bullets[number];
 
     if (bullet.y > 0) {
       bullet.y += sin(bullet.shotAngle) * 10;
-
       bullet.x += cos(bullet.shotAngle) *10;
 
-
       circle(bullet.x,bullet.y,bullet.diameter);
-
-
     }
+
     else {
       bullets.splice(0,1);
     }
 
-    for (let enemy of enemys ) {
+    for (let i = 0; i < enemys.length; i++) {
+      let enemy = enemys[i];
       hit = collideCircleCircle(bullet.x,bullet.y,bullet.diameter,enemy.x,enemy.y,enemy.diameter);
+
       if (hit) {
-        enemys.pop();
-        bullets.splice(0,1);
+        bullets.splice(i,1);
+        enemys.splice(i,1);
       }
     }
 
