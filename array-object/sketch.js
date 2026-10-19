@@ -10,6 +10,7 @@ let hit = false;
 
 let enemys = [];
 let bullets = [];
+let enemyBullets = [];
 
 let time = 10;
 let deltaTime = 0.01;
@@ -20,8 +21,8 @@ let angle = 0;
 let endX;
 let endY;
 let cannonLength = 50;
-const GRAVITY = 1;
-
+let bulletSpeed = 10;
+let enemyBulletAllowed = false;
 
 async function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -45,6 +46,8 @@ function draw() {
   drawPlayer();
   movePlayer();
   drawBullets();
+  drawEnemyBullets();
+  moveEnemyBullets();
 }
 
 function mouseWheel(event) {
@@ -67,7 +70,7 @@ function drawEnemies() {
   for (let enemy of enemys) {
     circle(enemy.x,enemy.y,enemy.diameter);
     enemy.x = noise(time + enemy.offset) * width;
-    enemy.y = noise(time + enemy.offset + 1000) * height;
+    enemy.y = noise(time + enemy.offset + 100002) * height;
   
   };
   time += deltaTime;
@@ -88,12 +91,12 @@ function drawPlayer() {
 }
 
 function movePlayer() {
-  if (keyIsDown("a") || keyIsDown(LEFT_ARROW)) {
+  if (keyIsDown("a") || keyIsDown("A") || keyIsDown(LEFT_ARROW)) {
     if (player.x > 0) {
       player.x -= speed;
     }
   }
-  else if (keyIsDown("d") || keyIsDown(RIGHT_ARROW)) {
+  else if (keyIsDown("d") || keyIsDown("D") || keyIsDown(RIGHT_ARROW)) {
     if (player.x < width-player.width ) {
       player.x += speed;
     }
@@ -112,12 +115,12 @@ function mousePressed() {
 }
 
 function drawBullets() {
-  for (let number = 0; number < bullets.length; number++) {
+  for (let number = bullets.length-1; number >= 0; number--) {
     let bullet = bullets[number];
 
     if (bullet.y > 0) {
-      bullet.y += sin(bullet.shotAngle) * 10;
-      bullet.x += cos(bullet.shotAngle) *10;
+      bullet.y += sin(bullet.shotAngle) * bulletSpeed;
+      bullet.x += cos(bullet.shotAngle) * bulletSpeed;
 
       circle(bullet.x,bullet.y,bullet.diameter);
     }
@@ -126,12 +129,12 @@ function drawBullets() {
       bullets.splice(0,1);
     }
 
-    for (let i = 0; i < enemys.length; i++) {
+    for (let i = enemys.length-1; i >= 0; i--) {
       let enemy = enemys[i];
       hit = collideCircleCircle(bullet.x,bullet.y,bullet.diameter,enemy.x,enemy.y,enemy.diameter);
 
       if (hit) {
-        bullets.splice(i,1);
+        bullets.splice(number,1);
         enemys.splice(i,1);
       }
     }
@@ -139,4 +142,22 @@ function drawBullets() {
 
   };
 
+}
+
+function drawEnemyBullets() {
+  for (let enemy of enemys) {
+    let enemyBullet = {
+      x: enemy.x,
+      y: enemy.y,
+      diameter: 10,
+    };
+    circle(enemyBullet.x,enemyBullet.y,enemyBullet.diameter);
+  }
+}
+
+function moveEnemyBullets() {
+  for (let enemyBullet of enemyBullets) {
+    circle(enemyBullet.x,enemyBullet.y,enemyBullet.diameter);
+    enemyBullet.y ++;
+  }
 }
