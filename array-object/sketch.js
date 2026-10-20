@@ -6,15 +6,16 @@
 // - describe what you did to take this project "above and beyond"
 
 
-let hit = false;
-
-let enemys = [];
+// arrays
+let enemies = [];
 let bullets = [];
 let enemyBullets = [];
 
-
+// enemy movement variables
 let time = 10;
 let deltaTime = 0.01;
+
+// player movement and player object variables
 let speed = 10;
 let player = {};
 let playerCannon = {};
@@ -23,14 +24,22 @@ let endX;
 let endY;
 let cannonLength = 50;
 let bulletSpeed = 10;
-let enemyState = "shoot";
+
+// enemy bullet variables
 let waitTime = 400;
 let lastBullet = 0;
+
+// enemy spawn variables
 let spawnTime = 2000;
 let lastSpawn = 0;
 
+// collision varible
+let hit = false;
+
 async function setup() {
   createCanvas(windowWidth, windowHeight);
+  
+  // create player
   player = {
     width: 100,
     height: 30,
@@ -38,6 +47,7 @@ async function setup() {
     y: height - 50,
   };
 
+  // create player cannon
   playerCannon = {
     diameter: 40,
     x: player.x + player.width/2,
@@ -47,31 +57,33 @@ async function setup() {
 
 function draw() {
   background(220);
+  makeEnemies();
   drawEnemies();
   drawPlayer();
   movePlayer();
   drawBullets();
-  makeEnemies();
   makeEnemyBullets();
   moveEnemyBullets();
 }
 
+// create enemies with spawnTime delay on loop
 function makeEnemies() {
   if (millis() > spawnTime + lastSpawn) {
     let enemy = {
-      x: 0,
-      y: 0,
+      x: undefined,
+      y: undefined,
       diameter: 100,
       offset: random(10000),
       
     };
-    enemys.push(enemy);
+    enemies.push(enemy);
     lastSpawn += spawnTime;
   }
 }
 
+// draw each enemy in enemies with noise function movement
 function drawEnemies() {
-  for (let enemy of enemys) {
+  for (let enemy of enemies) {
     enemy.x = noise(time + enemy.offset) * width;
     enemy.y = noise(time + enemy.offset + 100002) * height/2;
     circle(enemy.x,enemy.y,enemy.diameter);
@@ -81,18 +93,21 @@ function drawEnemies() {
   
 }
 
+// draw the player and the player cannon pointing at the mouse
 function drawPlayer() {
+  // draw player body
   strokeWeight(2);
   rect(player.x,player.y,player.width,player.height);
   circle(playerCannon.x,playerCannon.y,playerCannon.diameter);
   strokeWeight(20);
 
+  // find angle and draw cannon
   angle = atan2(mouseY - playerCannon.y,mouseX - playerCannon.x);
   endX = playerCannon.x + cos(angle) * cannonLength;
   endY = playerCannon.y + sin(angle) * cannonLength;
-
   line(playerCannon.x,playerCannon.y,endX,endY);
 }
+
 
 function movePlayer() {
   if (keyIsDown("a") || keyIsDown("A") || keyIsDown(LEFT_ARROW)) {
@@ -122,24 +137,25 @@ function drawBullets() {
   for (let number = bullets.length-1; number >= 0; number--) {
     let bullet = bullets[number];
 
+    // draw bullets on the same angle as the player cannon
     if (bullet.y > 0) {
       bullet.y += sin(bullet.shotAngle) * bulletSpeed;
       bullet.x += cos(bullet.shotAngle) * bulletSpeed;
 
       circle(bullet.x,bullet.y,bullet.diameter);
     }
-
     else {
       bullets.splice(0,1);
     }
 
-    for (let i = enemys.length-1; i >= 0; i--) {
-      let enemy = enemys[i];
+    // check collisions between player bullets and enemies
+    for (let i = enemies.length-1; i >= 0; i--) {
+      let enemy = enemies[i];
       hit = collideCircleCircle(bullet.x,bullet.y,bullet.diameter,enemy.x,enemy.y,enemy.diameter);
 
       if (hit) {
         bullets.splice(number,1);
-        enemys.splice(i,1);
+        enemies.splice(i,1);
       }
     }
 
@@ -148,9 +164,10 @@ function drawBullets() {
 
 }
 
+// on waitTime delay make enemy bullets
 function makeEnemyBullets() {
   if (millis() > waitTime + lastBullet) {
-    for (let enemy of enemys) {
+    for (let enemy of enemies) {
       let enemyBullet = {
         x: enemy.x,
         y: enemy.y,
