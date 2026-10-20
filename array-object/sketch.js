@@ -12,6 +12,7 @@ let enemys = [];
 let bullets = [];
 let enemyBullets = [];
 
+
 let time = 10;
 let deltaTime = 0.01;
 let speed = 10;
@@ -22,7 +23,11 @@ let endX;
 let endY;
 let cannonLength = 50;
 let bulletSpeed = 10;
-let enemyBulletAllowed = false;
+let enemyState = "shoot";
+let waitTime = 400;
+let lastBullet = 0;
+let spawnTime = 2000;
+let lastSpawn = 0;
 
 async function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -46,31 +51,30 @@ function draw() {
   drawPlayer();
   movePlayer();
   drawBullets();
-  drawEnemyBullets();
+  makeEnemies();
+  makeEnemyBullets();
   moveEnemyBullets();
 }
 
-function mouseWheel(event) {
-  if (event.delta < 0) {
+function makeEnemies() {
+  if (millis() > spawnTime + lastSpawn) {
     let enemy = {
-      x: noise(time),
-      y: noise(time + 1000),
+      x: 0,
+      y: 0,
       diameter: 100,
       offset: random(10000),
       
     };
     enemys.push(enemy);
-  }
-  else{
-    enemys.pop();
+    lastSpawn += spawnTime;
   }
 }
 
 function drawEnemies() {
   for (let enemy of enemys) {
-    circle(enemy.x,enemy.y,enemy.diameter);
     enemy.x = noise(time + enemy.offset) * width;
-    enemy.y = noise(time + enemy.offset + 100002) * height;
+    enemy.y = noise(time + enemy.offset + 100002) * height/2;
+    circle(enemy.x,enemy.y,enemy.diameter);
   
   };
   time += deltaTime;
@@ -144,20 +148,27 @@ function drawBullets() {
 
 }
 
-function drawEnemyBullets() {
-  for (let enemy of enemys) {
-    let enemyBullet = {
-      x: enemy.x,
-      y: enemy.y,
-      diameter: 10,
-    };
-    circle(enemyBullet.x,enemyBullet.y,enemyBullet.diameter);
+function makeEnemyBullets() {
+  if (millis() > waitTime + lastBullet) {
+    for (let enemy of enemys) {
+      let enemyBullet = {
+        x: enemy.x,
+        y: enemy.y,
+        diameter: 10,
+      };
+      enemyBullets.push(enemyBullet);
+    }
+    lastBullet += waitTime;
   }
 }
 
 function moveEnemyBullets() {
-  for (let enemyBullet of enemyBullets) {
-    circle(enemyBullet.x,enemyBullet.y,enemyBullet.diameter);
-    enemyBullet.y ++;
+  for (let i = enemyBullets.length-1; i >= 0; i--) {
+    circle(enemyBullets[i].x,enemyBullets[i].y,enemyBullets[i].diameter);
+    enemyBullets[i].y += bulletSpeed;
+
+    if (enemyBullets[i].y > height) {
+      enemyBullets.splice(i,1);
+    }
   }
 }
