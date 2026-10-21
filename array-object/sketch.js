@@ -25,6 +25,22 @@ let endY;
 let cannonLength = 50;
 let bulletSpeed = 10;
 
+// health bar variables
+let health = 100;
+let healthBarOutline = {
+  width: 200,
+  height: 20,
+  x: 0,
+  y: 0,
+};
+let healthBar = {
+  width: healthBarOutline.width,
+  height: healthBarOutline.height,
+  x: healthBarOutline.x,
+  y: healthBarOutline.y,
+};
+let damage = 25;
+
 // enemy bullet variables
 let waitTime = 400;
 let lastBullet = 0;
@@ -34,7 +50,8 @@ let spawnTime = 2000;
 let lastSpawn = 0;
 
 // collision varible
-let hit = false;
+let hitEnemy = false;
+let hitPlayer = false;
 
 async function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -57,6 +74,7 @@ async function setup() {
 
 function draw() {
   background(220);
+  drawInformation();
   makeEnemies();
   drawEnemies();
   drawPlayer();
@@ -64,6 +82,7 @@ function draw() {
   drawBullets();
   makeEnemyBullets();
   moveEnemyBullets();
+  checkDead();
 }
 
 // create enemies with spawnTime delay on loop
@@ -134,8 +153,8 @@ function mousePressed() {
 }
 
 function drawBullets() {
-  for (let number = bullets.length-1; number >= 0; number--) {
-    let bullet = bullets[number];
+  for (let indexB = bullets.length-1; indexB >= 0; indexB--) {
+    let bullet = bullets[indexB];
 
     // draw bullets on the same angle as the player cannon
     if (bullet.y > 0) {
@@ -145,17 +164,17 @@ function drawBullets() {
       circle(bullet.x,bullet.y,bullet.diameter);
     }
     else {
-      bullets.splice(0,1);
+      bullets.splice(indexB,1);
     }
 
     // check collisions between player bullets and enemies
-    for (let i = enemies.length-1; i >= 0; i--) {
-      let enemy = enemies[i];
-      hit = collideCircleCircle(bullet.x,bullet.y,bullet.diameter,enemy.x,enemy.y,enemy.diameter);
+    for (let indexE = enemies.length-1; indexE >= 0; indexE--) {
+      let enemy = enemies[indexE];
+      hitEnemy = collideCircleCircle(bullet.x,bullet.y,bullet.diameter,enemy.x,enemy.y,enemy.diameter);
 
-      if (hit) {
-        bullets.splice(number,1);
-        enemies.splice(i,1);
+      if (hitEnemy) {
+        bullets.splice(indexB,1);
+        enemies.splice(indexE,1);
       }
     }
 
@@ -180,12 +199,33 @@ function makeEnemyBullets() {
 }
 
 function moveEnemyBullets() {
-  for (let i = enemyBullets.length-1; i >= 0; i--) {
-    circle(enemyBullets[i].x,enemyBullets[i].y,enemyBullets[i].diameter);
-    enemyBullets[i].y += bulletSpeed;
+  for (let index = enemyBullets.length-1; index >= 0; index--) {
+    let enemyBullet = enemyBullets[index];
+    circle(enemyBullet.x,enemyBullet.y,enemyBullet.diameter);
+    enemyBullet.y += bulletSpeed;
 
-    if (enemyBullets[i].y > height) {
-      enemyBullets.splice(i,1);
+    if (enemyBullet.y > height) {
+      enemyBullets.splice(index,1);
     }
   }
+}
+
+function checkDead() {
+  for (let index = enemyBullets.length-1; index >= 0; index--) {
+    let enemyBullet = enemyBullets[index];
+    hitPlayer = collideRectCircle(player.x,player.y,player.width,player.height,enemyBullet.x,enemyBullet.y,enemyBullet.diameter);
+    if (hitPlayer) {
+      enemyBullets.splice(index,1);
+      health -= damage;
+    }
+  }
+}
+
+function drawInformation() {
+  fill("red");
+  strokeWeight(2);
+  rect(healthBarOutline.x,healthBarOutline.y,healthBarOutline.width,healthBarOutline.height);
+  fill("green");
+  fill("white");
+
 }
