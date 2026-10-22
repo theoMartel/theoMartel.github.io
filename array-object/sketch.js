@@ -11,6 +11,10 @@ let enemies = [];
 let bullets = [];
 let enemyBullets = [];
 
+// play state variables
+let playing = false;
+let startScreen = true;
+
 // enemy movement variables
 let time = 10;
 let deltaTime = 0.01;
@@ -26,7 +30,7 @@ let cannonLength = 50;
 let bulletSpeed = 10;
 
 // health bar variables
-let health = 100;
+let health = 200;
 let healthBarOutline = {
   width: 200,
   height: 20,
@@ -73,16 +77,34 @@ async function setup() {
 }
 
 function draw() {
-  background(220);
-  drawInformation();
-  makeEnemies();
-  drawEnemies();
-  drawPlayer();
-  movePlayer();
-  drawBullets();
-  makeEnemyBullets();
-  moveEnemyBullets();
-  checkDead();
+  if (playing) {
+    stroke("grey");
+    background("black");
+    drawInformation();
+    makeEnemies();
+    drawEnemies();
+    drawPlayer();
+    movePlayer();
+    drawBullets();
+    makeEnemyBullets();
+    moveEnemyBullets();
+    checkDead();
+
+  }
+  else if (!startScreen) {
+    background("black");
+    stroke("white");
+    textSize(10);
+    stroke(2);
+    text("you died",width/2,height/2);
+  }
+  else if (startScreen) {
+    background("black");
+    stroke("white");
+    fill("white");
+    rect(width/2 - 150,height/2 - 50,300,100);
+    text("Space Shooter", width/2,height/4);
+  }
 }
 
 // create enemies with spawnTime delay on loop
@@ -226,6 +248,11 @@ function drawInformation() {
   strokeWeight(2);
   rect(healthBarOutline.x,healthBarOutline.y,healthBarOutline.width,healthBarOutline.height);
   fill("green");
+  rect(healthBar.x,healthBar.y,healthBar.width,healthBar.height);
+  healthBar.width = health;
+  if (health <= 0) {
+    playing = false;
+  }
   fill("white");
 
 }
