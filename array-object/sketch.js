@@ -29,10 +29,15 @@ let endY;
 let cannonLength = 50;
 let bulletSpeed = 10;
 
+// player bullet variables
+let ammo = 10;
+let ammoRegenTime = 3000;
+let lastAmmoRegen = 0;
+
 // health bar variables
 let health = 200;
 let healthBarOutline = {
-  width: 200,
+  width: 100,
   height: 20,
   x: 0,
   y: 0,
@@ -57,9 +62,17 @@ let lastSpawn = 0;
 let hitEnemy = false;
 let hitPlayer = false;
 
+// text variables
+let font;
+
 async function setup() {
   createCanvas(windowWidth, windowHeight);
   
+  textAlign(CENTER,CENTER);
+  // font settings
+  font = await loadFont("SPACEBAR.ttf");
+  textFont(font);
+
   // create player
   player = {
     width: 100,
@@ -78,32 +91,23 @@ async function setup() {
 
 function draw() {
   if (playing) {
-    stroke("grey");
+    stroke("white");
     background("black");
+    fill("blue");
     drawInformation();
     makeEnemies();
     drawEnemies();
     drawPlayer();
     movePlayer();
     drawBullets();
+    regenBullets();
     makeEnemyBullets();
     moveEnemyBullets();
     checkDead();
 
   }
-  else if (!startScreen) {
-    background("black");
-    stroke("white");
-    textSize(10);
-    stroke(2);
-    text("you died",width/2,height/2);
-  }
   else if (startScreen) {
-    background("black");
-    stroke("white");
-    fill("white");
-    rect(width/2 - 150,height/2 - 50,300,100);
-    text("Space Shooter", width/2,height/4);
+    drawStartScreen();
   }
 }
 
@@ -118,7 +122,7 @@ function makeEnemies() {
       
     };
     enemies.push(enemy);
-    lastSpawn += spawnTime;
+    lastSpawn += spawnTime - 10;
   }
 }
 
@@ -140,13 +144,14 @@ function drawPlayer() {
   strokeWeight(2);
   rect(player.x,player.y,player.width,player.height);
   circle(playerCannon.x,playerCannon.y,playerCannon.diameter);
-  strokeWeight(20);
-
+  
   // find angle and draw cannon
   angle = atan2(mouseY - playerCannon.y,mouseX - playerCannon.x);
   endX = playerCannon.x + cos(angle) * cannonLength;
   endY = playerCannon.y + sin(angle) * cannonLength;
+  strokeWeight(20);
   line(playerCannon.x,playerCannon.y,endX,endY);
+  strokeWeight(2);
 }
 
 
@@ -162,16 +167,25 @@ function movePlayer() {
     }
   }
   playerCannon.x = player.x + player.width/2;
+  healthBarOutline.x = player.x;
+  healthBarOutline.y = player.y + 20;
+  healthBar.x = player.x;
+  healthBar.y = player.y + 20;
+
 }
 
 function mousePressed() {
-  let bullet = {
-    x: endX,
-    y: endY,
-    diameter: 20,
-    shotAngle: angle,
-  };
-  bullets.push(bullet);
+  if (ammo > 0) {
+    let bullet = {
+      x: endX,
+      y: endY,
+      diameter: 20,
+      shotAngle: angle,
+    };
+    bullets.push(bullet);
+    ammo --;
+
+  }
 }
 
 function drawBullets() {
@@ -197,10 +211,19 @@ function drawBullets() {
       if (hitEnemy) {
         bullets.splice(indexB,1);
         enemies.splice(indexE,1);
+        ammo += 1;
       }
     }
 
 
+  };
+
+}
+
+function regenBullets() {
+  if (millis() > ammoRegenTime + lastAmmoRegen) {
+    ammo ++;
+    lastAmmoRegen += ammoRegenTime;
   };
 
 }
@@ -250,9 +273,42 @@ function drawInformation() {
   fill("green");
   rect(healthBar.x,healthBar.y,healthBar.width,healthBar.height);
   healthBar.width = health;
+  fill("white");
+  rect(10,10,100,50);
+  fill("black");
+  textSize(30);
+  text(ammo, 60, 35);
   if (health <= 0) {
     playing = false;
+    startScreen = true;
   }
-  fill("white");
+  fill("blue");
 
+}
+
+
+function drawStartScreen() {
+  health = 100;
+  enemies = [];
+  enemyBullets = [];
+  background("black");
+  stroke("black");
+  fill("white");
+  rect(width/2 - 150,height/2 - 50,300,100);
+  fill("black");
+  textSize(70);
+  text("PLAY", width/2,height/2);
+  fill("blue");
+  stroke("white");
+  textSize(150);
+  text("iSHOOTER",width/2,height/3);
+  drawPlayer();
+  movePlayer();
+  drawBullets();
+  for (let bullet of bullets) {
+    if (collideRectCircle(width/2-150,height/2-50,300,100,bullet.x,bullet.y,bullet.diameter)) {
+      playing = true;
+    }
+
+  }
 }
