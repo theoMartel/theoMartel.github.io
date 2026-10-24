@@ -11,9 +11,10 @@ let enemies = [];
 let bullets = [];
 let enemyBullets = [];
 
-// play state variables
+// state variables
 let playing = false;
-let startScreen = true;
+let dead = false;
+
 
 // enemy movement variables
 let time = 10;
@@ -28,6 +29,8 @@ let endX;
 let endY;
 let cannonLength = 50;
 let bulletSpeed = 10;
+let score = 0;
+let highscore = 0;
 
 // player bullet variables
 let ammo = 10;
@@ -106,7 +109,7 @@ function draw() {
     checkDead();
 
   }
-  else if (startScreen) {
+  else {
     drawStartScreen();
   }
 }
@@ -186,6 +189,7 @@ function mousePressed() {
     ammo --;
 
   }
+
 }
 
 function drawBullets() {
@@ -212,6 +216,7 @@ function drawBullets() {
         bullets.splice(indexB,1);
         enemies.splice(indexE,1);
         ammo += 1;
+        score += 1;
       }
     }
 
@@ -263,6 +268,14 @@ function checkDead() {
       enemyBullets.splice(index,1);
       health -= damage;
     }
+    if (health <= 0) {
+    playing = false;
+    dead = true;
+    if (score > highscore) {
+      highscore = score;
+    }
+    score = 0;
+  }
   }
 }
 
@@ -274,14 +287,16 @@ function drawInformation() {
   rect(healthBar.x,healthBar.y,healthBar.width,healthBar.height);
   healthBar.width = health;
   fill("white");
-  rect(10,10,100,50);
+  rect(10,10,100,60);
+  rect(120,10,100,60);
   fill("black");
+  textSize(20);
+  text("SCORE",170,20);
+  text("AMMO",60,20);
   textSize(30);
-  text(ammo, 60, 35);
-  if (health <= 0) {
-    playing = false;
-    startScreen = true;
-  }
+  text(ammo, 60, 45);
+  text(score,170,45);
+
   fill("blue");
 
 }
@@ -296,12 +311,28 @@ function drawStartScreen() {
   fill("white");
   rect(width/2 - 150,height/2 - 50,300,100);
   fill("black");
-  textSize(70);
-  text("PLAY", width/2,height/2);
+  if (dead) {
+    textSize(50);
+    text("REPLAY", width/2,height/2);
+  }
+  else {
+    textSize(70);
+    text("PLAY", width/2,height/2);
+  }
   fill("blue");
   stroke("white");
-  textSize(150);
-  text("iSHOOTER",width/2,height/3);
+  textSize(130);
+  text("SPACE SHOOTER",width/2,height/3);
+
+  fill("white");
+  rect(120,10,180,60);
+  fill("black");
+  textSize(20);
+  text("HIGHSCORE",210,20);
+  textSize(30);
+  text(highscore,210,45);
+
+  fill("blue");
   drawPlayer();
   movePlayer();
   drawBullets();
@@ -312,3 +343,4 @@ function drawStartScreen() {
 
   }
 }
+
