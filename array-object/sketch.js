@@ -304,6 +304,7 @@ function drawInformation() {
 
 function drawStartScreen() {
   health = 100;
+  ammo = 10;
   enemies = [];
   enemyBullets = [];
   background("black");
