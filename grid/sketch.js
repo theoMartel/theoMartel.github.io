@@ -34,6 +34,7 @@ function showGrid() {
         fill("white");
       }
       square(x * squareSize,y * squareSize,squareSize);
+
     }
   }
 }
@@ -54,4 +55,16 @@ function randomizedGrid(cols,rows) {
     }
   }
   return newGrid;
+}
+
+function mousePressed() {
+  let x = Math.floor(mouseX/squareSize);
+  let y = Math.floor(mouseY/squareSize);
+
+  if (grid[y][x] === 1) {
+    grid[y][x] = 0;
+  }
+  else {
+    grid[y][x] = 1;
+  }
 }
