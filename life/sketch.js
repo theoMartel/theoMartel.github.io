@@ -1,9 +1,11 @@
 // 2d rectangular grid demo
 
-const CELL_SIZE = 20;
+const CELL_SIZE = 50;
+const CHANGE_ON_MULTIPLES_OF = 10;
 let rows;
 let cols;
 let grid;
+let autoplayIsON = false;
 
 async function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -14,6 +16,10 @@ async function setup() {
 
 function draw() {
   background(220);
+  displayGrid();
+  if (autoplayIsON && frameCount % CHANGE_ON_MULTIPLES_OF === 0) {
+    grid = updateGrid();
+  }
   displayGrid();
 }
 function updateGrid() {
@@ -29,7 +35,7 @@ function updateGrid() {
         for (let j = -1; j <= 1; j++) {
           // dont go off edge
           if (x+j >=0 && x+j < cols && y+i >=0 && y+i < rows) {
-            neighbours += grid[y+1][x+j];
+            neighbours += grid[y+i][x+j];
           }
 
         }
@@ -74,6 +80,9 @@ function keyPressed() {
   }
   else if (key === " ") {
     grid = updateGrid();
+  }
+  else if (key === "a") {
+    autoplayIsON = !autoplayIsON;
   }
 }
 
