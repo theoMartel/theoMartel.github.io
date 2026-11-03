@@ -12,9 +12,9 @@
 - [Collision Library Demo](collision)
 - [Randomized Art](art)
 - [Images and Sound Fx](assets)
-- [Grid Demo] (grid)
-- [Rectangle Demo] (rectangles)
-- [game of life] (life)
+- [Grid Demo](grid)
+- [Rectangle Demo](rectangles)
+- [game of life](life)
 
 ## Projects
 - [Interactive Scene](scene)
