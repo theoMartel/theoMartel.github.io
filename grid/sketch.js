@@ -3,18 +3,18 @@
 
 // let grid = [ [1,0,1,1],[0,1,1,0],[1,0,0,1],[0,0,1,0]];
 // let squareSize;
-// const SQUARE_DIMENTIONS = grid.length;
+// const NUMBER_OF_SQUARES = grid.length;
 
 
-const SQUARE_DIMENTIONS = 50;
+const NUMBER_OF_SQUARES = 50;
 let squareSize;
 let grid;
 
 async function setup() {
   createCanvas(windowWidth, windowHeight);
-  squareSize = height/SQUARE_DIMENTIONS;
+  squareSize = height/NUMBER_OF_SQUARES;
 
-  grid = randomizedGrid(SQUARE_DIMENTIONS,SQUARE_DIMENTIONS);
+  grid = randomizedGrid(NUMBER_OF_SQUARES,NUMBER_OF_SQUARES);
 }
 
 function draw() {
@@ -24,8 +24,8 @@ function draw() {
 }
 
 function showGrid() {
-  for (let y= 0; y< SQUARE_DIMENTIONS; y++) {
-    for (let x = 0; x < SQUARE_DIMENTIONS; x++) {
+  for (let y= 0; y< NUMBER_OF_SQUARES; y++) {
+    for (let x = 0; x < NUMBER_OF_SQUARES; x++) {
       if (grid[y][x] === 1) {
         fill("black");
 
