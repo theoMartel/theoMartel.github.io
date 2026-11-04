@@ -1,17 +1,19 @@
 // 2d rectangular grid demo
 
-const CELL_SIZE = 50;
-const CHANGE_ON_MULTIPLES_OF = 10;
+const CELL_SIZE = 90;
+const CHANGE_ON_MULTIPLES_OF = 5;
 let rows;
 let cols;
 let grid;
 let autoplayIsON = false;
+let gosper;
 
 async function setup() {
   createCanvas(windowWidth, windowHeight);
   rows = Math.floor(height/CELL_SIZE);
   cols = Math.floor(width/CELL_SIZE);
   grid = generateRandomGrid(cols, rows);
+  gosper = await loadJSON("gosper2.json");
 }
 
 function draw() {
@@ -83,6 +85,9 @@ function keyPressed() {
   }
   else if (key === "a") {
     autoplayIsON = !autoplayIsON;
+  }
+  else if (key === "g") {
+    grid = gosper;
   }
 }
 
