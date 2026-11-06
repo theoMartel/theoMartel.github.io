@@ -36,12 +36,11 @@ function mousePressed() {
   let x = Math.floor(mouseX/CELL_SIZE);
   let y = Math.floor(mouseY/CELL_SIZE);
 
-  //self
-  toggleCell(x, y);
+  changeCell(x, y);
 
 }
 
-function toggleCell(x, y) {
+function changeCell(x, y) {
   //make sure you're in the grid
   if (x >= 0 && x < cols && y >= 0 && y < rows) {
     if (grid[y][x] === 0) {
