@@ -16,6 +16,8 @@
 - [Rectangle Demo](rectangles)
 - [game of life](life)
 - [Character in Grid](character)
+- [SetTimeout](timeout)
+- [setInterval](interval)
 
 ## Projects
 - [Interactive Scene](scene)

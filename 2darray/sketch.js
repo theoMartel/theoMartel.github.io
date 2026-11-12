@@ -13,10 +13,12 @@ const CELL_SIZE = 30;
 async function setup() {
   createCanvas(windowWidth, windowHeight);
   grid = generateEmptyGrid(cols,rows);
+
 }
 
 function draw() {
   background(220);
+  drawLine();
   showGrid();
 }
 
@@ -63,5 +65,12 @@ function showGrid() {
       }
       square(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE);
     }
+  }
+}
+
+function drawLine() {
+  let y = height/4;
+  for (let x=width/5;x<=4*width/5,x++;) {
+    line(x,y,x,y+200);
   }
 }
