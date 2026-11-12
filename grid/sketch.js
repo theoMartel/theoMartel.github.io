@@ -6,7 +6,7 @@
 // const NUMBER_OF_SQUARES = grid.length;
 
 
-const NUMBER_OF_SQUARES = 12;
+const NUMBER_OF_SQUARES = 10;
 let squareSize;
 let grid;
 
