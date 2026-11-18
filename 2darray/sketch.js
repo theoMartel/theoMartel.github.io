@@ -6,25 +6,35 @@
 // - describe what you did to take this project "above and beyond"
 
 let grid;
-let cols;
-let rows = 6;
+let cols = 25;
+let rows = 4;
 let gridWidth;
 const CELL_SIZE = 30;
 let lineX;
-let lineSpeed = 5;
+let lineSpeed = 2;
+let kick;
+let snare;
+let hihat;
+let cymbal;
+let lineOn = false;
 
 async function setup() {
   createCanvas(windowWidth, windowHeight);
   gridWidth = width/2;
-  cols = gridWidth/CELL_SIZE;
   grid = generateEmptyGrid(cols,rows);
   lineX = width/4;
+
+  kick = await loadSound("kick.mp3");
+  snare = await loadSound("snare.mp3");
+  hihat = await loadSound("hihat.mp3");
+  cymbal = await loadSound("cymbal.mp3");
 }
 
 function draw() {
   background(220);
   showGrid();
   drawLine();
+  playSounds();
 }
 
 function generateEmptyGrid(cols, rows) {
@@ -38,6 +48,11 @@ function generateEmptyGrid(cols, rows) {
   return newGrid;
 }
 
+function keyPressed() {
+  if (key === " ") {
+    lineOn = !lineOn;
+  }
+}
 
 function mousePressed() {
   let x = Math.floor((mouseX - width/4)/CELL_SIZE);
@@ -64,12 +79,6 @@ function changeCell(x, y) {
       else if (y === 3 ) {
         grid[y][x] = 4;
       }
-      else if (y === 4) {
-        grid[y][x] = 5;
-      }
-      else if (y === 5) {
-        grid[y][x] = 6;
-      }
 
     }
   
@@ -78,11 +87,10 @@ function changeCell(x, y) {
       grid[y][x] = 0;
     }
   }
-  console.log(grid[y][x]);
 }
 
 function showGrid() {
-  strokeWeight(5);
+  strokeWeight(2);
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       if (grid[y][x] === 0) {
@@ -100,12 +108,7 @@ function showGrid() {
       else if (grid[y][x] === 4) {
         fill("green");
       }
-      else if (grid[y][x] === 5) {
-        fill("yellow");
-      }
-      else if (grid[y][x] === 6) {
-        fill("red");
-      }
+    
 
       square(x * CELL_SIZE + width/4, y * CELL_SIZE + height/4, CELL_SIZE);
     }
@@ -116,12 +119,40 @@ function drawLine() {
   let y = height/4;
   strokeWeight(10);
   line(lineX,y,lineX,y+CELL_SIZE*rows);
-  lineX+= lineSpeed;
+  if (lineOn) {
+    lineX+= lineSpeed;
+  }
   if (lineX >= width/4*3) {
     lineX = width/4;
   }
 }
 
 function playSounds() {
-  
+  for (let y = 0; y < rows; y++) {
+    let realLineX = lineX - width/4;
+    let x = Math.floor(realLineX/CELL_SIZE);
+    let lastX;
+    if (grid[y][x] === 1 && !kick.isPlaying()) {
+      kick.start();
+      lastX = x;
+    }
+    else if (grid[y][x] === 2 && !snare.isPlaying()) {
+      snare.start();
+      lastX = x;
+    }
+    else if (grid[y][x] === 3 && !hihat.isPlaying()) {
+      hihat.start();
+      lastX = x;
+    } 
+    else if (grid[y][x] === 4 && !cymbal.isPlaying()) {
+      cymbal.start();
+      lastX = x;
+    }
+    if (lastX !== x) {
+      if (kick.isPlaying()) {
+        kick.stop();
+      }
+    }
+  }
 }
+
