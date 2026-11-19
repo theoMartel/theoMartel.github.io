@@ -6,7 +6,7 @@
 // - describe what you did to take this project "above and beyond"
 
 let grid;
-let cols = 25;
+let cols = 26;
 let rows = 4;
 let gridWidth;
 const CELL_SIZE = 30;
@@ -17,6 +17,7 @@ let snare;
 let hihat;
 let cymbal;
 let lineOn = false;
+let lastX = 0;
 
 async function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -34,7 +35,7 @@ function draw() {
   background(220);
   showGrid();
   drawLine();
-  playSounds();
+  checkLineX();
 }
 
 function generateEmptyGrid(cols, rows) {
@@ -127,32 +128,34 @@ function drawLine() {
   }
 }
 
-function playSounds() {
+function checkLineX() {
+  let realLineX = lineX - width/4;
+  let x = Math.floor(realLineX/CELL_SIZE);
+  if (x !== lastX) {
+    playSounds(x);
+    lastX = x;
+  }
+}
+
+function playSounds(x) {
   for (let y = 0; y < rows; y++) {
-    let realLineX = lineX - width/4;
-    let x = Math.floor(realLineX/CELL_SIZE);
-    let lastX;
-    if (grid[y][x] === 1 && !kick.isPlaying()) {
+    if (grid[y][x] === 1) {
       kick.start();
-      lastX = x;
+      console.log("playkick");
     }
-    else if (grid[y][x] === 2 && !snare.isPlaying()) {
+    if (grid[y][x] === 2) {
       snare.start();
-      lastX = x;
+      console.log("playsnare");
     }
-    else if (grid[y][x] === 3 && !hihat.isPlaying()) {
+    if (grid[y][x] === 3) {
       hihat.start();
-      lastX = x;
+      console.log("playhihat");
     } 
-    else if (grid[y][x] === 4 && !cymbal.isPlaying()) {
+    if (grid[y][x] === 4) {
       cymbal.start();
-      lastX = x;
+      console.log("playcymbal");
     }
-    if (lastX !== x) {
-      if (kick.isPlaying()) {
-        kick.stop();
-      }
-    }
+    
   }
 }
 
