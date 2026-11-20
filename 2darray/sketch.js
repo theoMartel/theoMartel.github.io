@@ -6,9 +6,8 @@
 // - describe what you did to take this project "above and beyond"
 
 let grid;
-let cols = 26;
+let cols = 24;
 let rows = 4;
-let gridWidth;
 const CELL_SIZE = 30;
 let lineX;
 let lineSpeed = 2;
@@ -17,11 +16,25 @@ let snare;
 let hihat;
 let cymbal;
 let lineOn = false;
-let lastX = 0;
+let lastX = -1;
+
+
+class Button {
+  constructor(size,colour,x,y) {
+    this.size = size;
+    this.fill(colour);
+    this.x = x;
+    this.y = y;
+  }
+  drawButton() {
+    circle(this.x,this.y,this.size);
+  }
+
+}
+let cButton = new Button(50,"blue", 100,500);
 
 async function setup() {
   createCanvas(windowWidth, windowHeight);
-  gridWidth = width/2;
   grid = generateEmptyGrid(cols,rows);
   lineX = width/4;
 
@@ -123,7 +136,7 @@ function drawLine() {
   if (lineOn) {
     lineX+= lineSpeed;
   }
-  if (lineX >= width/4*3) {
+  if (lineX >= width/4 + CELL_SIZE * cols) {
     lineX = width/4;
   }
 }
