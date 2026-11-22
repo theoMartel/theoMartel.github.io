@@ -269,13 +269,13 @@ function checkDead() {
       health -= damage;
     }
     if (health <= 0) {
-    playing = false;
-    dead = true;
-    if (score > highscore) {
-      highscore = score;
+      playing = false;
+      dead = true;
+      if (score > highscore) {
+        highscore = score;
+      }
+      score = 0;
     }
-    score = 0;
-  }
   }
 }
 

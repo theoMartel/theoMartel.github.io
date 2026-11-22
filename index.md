@@ -12,7 +12,14 @@
 - [Collision Library Demo](collision)
 - [Randomized Art](art)
 - [Images and Sound Fx](assets)
+- [Grid Demo](grid)
+- [Rectangle Demo](rectangles)
+- [game of life](life)
+- [Character in Grid](character)
+- [SetTimeout](timeout)
+- [setInterval](interval)
 
 ## Projects
 - [Interactive Scene](scene)
 - [Arrays and Object Notation](array-object)
+- [2D Array](2darray)
