@@ -1,9 +1,11 @@
-// Project Title
-// Your Name
-// Date
+// 2D Array Assignment
+// Theo Martel
+// Nov 23
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// - Added sounds for the drum sections
+// - used p5.Oscillators for the piano section
+// - used OOP for the buttons
 
 let grid;
 let cols = 24;
@@ -53,7 +55,9 @@ class Button {
     text(this.key,this.x,this.y-75);
   }
   mousePressed() {
+    // get distance from center of button
     let distance = dist(mouseX,mouseY,this.x,this.y);
+    // check if distance is within circle
     if (distance <= this.size/2) {
       this.oscillatorName.amp(0.2,0.01);
       this.mousePlaying = true;
@@ -125,7 +129,7 @@ async function setup() {
   highCOscillator.amp(0)
   highCOscillator.start();
 
-
+  // create buttons
   buttons.push(new Button(100,"blue",width/4,500,"c",cOscillator,"1"));
   buttons.push(new Button(100,"turquoise",width/4+100,500,"d",dOscillator,"2"));
   buttons.push(new Button(100,"green",width/4+200,500,"e", eOscillator,"3"));
@@ -146,6 +150,7 @@ function draw() {
   showGrid();
   drawLine();
   checkLineX();
+  instructions();
 }
 
 function generateEmptyGrid(cols, rows) {
@@ -169,6 +174,7 @@ function keyPressed() {
 }
 
 function mousePressed() {
+  // check all buttons
   for (let button of buttons) {
     button.mousePressed()
   }
@@ -280,3 +286,8 @@ function playSounds(x) {
   }
 }
 
+function instructions() {
+  textSize(40);
+  text("C to clear drums, space to play", width/2,50);
+  text("Use number keys or click on buttons to play notes", width/2,100);
+}
