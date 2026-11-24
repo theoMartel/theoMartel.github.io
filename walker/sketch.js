@@ -1,12 +1,12 @@
 // walker
 
 class Walker {
-  constructor(x,y) {
+  constructor(x,y,colour) {
     this.x = x;
     this.y = y;
-    this.speed = 2;
-    this.diameter = 5;
-    this.colour = "red";
+    this.speed = 5;
+    this.diameter = 10;
+    this.colour = colour;
   }
   display() {
     fill(this.colour);
@@ -30,20 +30,21 @@ class Walker {
   }
 }
 
-let theo;
-let ryley;
+let walkers = [];
 
 async function setup() {
   createCanvas(windowWidth, windowHeight);
-  theo = new Walker(width/2,height/2);
-  ryley = new Walker(300,400);
-  ryley.colour = "blue";
+  noStroke();
 }
 
 function draw() {
-  theo.display();
-  ryley.display();
-  theo.move();
-  ryley.move();
+  for (let walker of walkers) {
+    walker.display();
+    walker.move();
+  }
   
+}
+
+function mousePressed() {
+  walkers.push(new Walker(mouseX,mouseY,random(255)));
 }
