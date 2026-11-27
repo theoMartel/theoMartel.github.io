@@ -6,7 +6,7 @@
 // - describe what you did to take this project "above and beyond"
 
 
-const PARTICLES_PER_CLICK = 1000;
+const PARTICLES_PER_CLICK = 100;
 
 class Particle {
   constructor(x,y) {
@@ -29,7 +29,11 @@ class Particle {
   update() {
     this.x += this.dx;
     this.y += this.dy;
-    this.opacity--;
+    this.opacity-= 5;
+  }
+
+  isDead() {
+    return this.opacity <= 0;
   }
 }
 
@@ -42,8 +46,15 @@ async function setup() {
 function draw() {
   background(0);
   for (let firework of theFireworks) {
-    firework.update();
-    firework.display();
+    if (firework.isDead()) {
+      let index = theFireworks.indexOf(firework);
+      theFireworks.splice(index,1);
+    }
+    else {
+      firework.update();
+      firework.display();
+    }
+
   }
 
 }
