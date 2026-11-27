@@ -19,6 +19,7 @@
 - [SetTimeout](timeout)
 - [setInterval](interval)
 - [Walker](walker)
+- [FireWorks](fireworks)
 
 ## Projects
 - [Interactive Scene](scene)
